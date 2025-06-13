@@ -41,7 +41,7 @@ for i = 2: length(t_leader)
 end
 
 x_follower0 = -13; % Initial position of the follower
-v_follower0 = 2.0; % Initial speed of follower
+v_follower0 = 0.0; % Initial speed of follower
 
 % Initial condition
 y0 = [x_follower0, v_follower0];

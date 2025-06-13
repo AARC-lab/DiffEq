@@ -40,11 +40,11 @@ for i = 2:length(t_leader)
     dt = t_leader(i) - t_leader(i-1);
     
     % Update leader position using previous velocity
-    x_leader(i) = x_leader(i-1) + v_leader(i-1) * dt;
+    % x_leader(i) = x_leader(i-1) + v_leader(i-1) * dt;
 
     % Use trapezoidal integration
-    % avg_speed = ( v_leader(i-1) + v_leader(i))/2;
-    % x_leader(i) = x_leader(i-1) + avg_speed*dt;
+    avg_speed = ( v_leader(i-1) + v_leader(i))/2;
+    x_leader(i) = x_leader(i-1) + avg_speed*dt;
     
     % Calculate gap (using previous positions for stability)
     s = x_leader(i-1) - x_follower(i-1) - L;
@@ -68,7 +68,9 @@ for i = 2:length(t_leader)
     % end
     
     % Update follower position
-    x_follower(i) = x_follower(i-1) + v_follower(i-1) * dt;
+    % x_follower(i) = x_follower(i-1) + v_follower(i-1) * dt;
+    avg_speed = ( v_follower(i-1) + v_follower(i))/2;
+    x_follower(i) = x_follower(i-1) + avg_speed*dt;
 end
 
 s = x_leader - x_follower;
@@ -101,9 +103,9 @@ title('Acceleration of the Follower', 'Interpreter', 'latex', 'FontSize', 16);
 grid on;
 
 subplot(2,3,4);
-plot(t_leader, v_leader, 'LineWidth', 2, 'Color', '#4286f4');
+plot(t_leader, x_leader, 'LineWidth', 2, 'Color', '#4286f4');
 hold on;
-plot(t_leader, v_follower, 'LineWidth', 2, 'Color', '#34eb77');
+plot(t_leader, x_follower, 'LineWidth', 2, 'Color', '#34eb77');
 xlabel('Time [s]', 'Interpreter', 'latex', 'FontSize', 14);
 ylabel('Position [m]', 'Interpreter', 'latex', 'FontSize', 14);
 title('Position of Leader and Follower', 'Interpreter', 'latex', 'FontSize', 16);
