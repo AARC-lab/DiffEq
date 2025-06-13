@@ -113,6 +113,8 @@ ylabel('Relative velocity $\Delta v$', 'Interpreter', 'latex', 'FontSize', 14);
 title('Relative velocity vs Gap', 'Interpreter', 'latex', 'FontSize', 16);
 grid on;
 
+sgtitle('Follow-the-leader Car-following Model: Continuous Solution using ODEs', 'Interpreter', 'latex', 'FontSize', 18);
+
 function dydt = follower_dynamics(t, y, t_leader, v_leader, x_leader, beta, L)
     % Interpolate leader data at time t
     v1 = interp1(t_leader, v_leader, t, 'pchip');
@@ -124,11 +126,11 @@ function dydt = follower_dynamics(t, y, t_leader, v_leader, x_leader, beta, L)
 
     gap = (x1 -x2 - L);
 
-    min_gap = 0.1;
-    if gap <= 0.0
-        gap = min_gap;
-        warning('Gap <= 0 at t = %.2f. Using min_gap.', t);
-    end
+    % min_gap = 0.1;
+    % if gap <= 0.0
+    %     gap = min_gap;
+    %     warning('Gap <= 0 at t = %.2f. Using min_gap.', t);
+    % end
 
     % differential equation 
     dx2dt = v2;
