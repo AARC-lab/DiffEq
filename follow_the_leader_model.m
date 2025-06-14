@@ -60,7 +60,7 @@ v1_sol = interp1(t_leader, v_leader, t_sol, 'pchip');
 x2_sol = y_sol(:, 1);
 v2_sol = y_sol(:, 2);
 
-s = x1_sol - x2_sol;
+s = x1_sol - x2_sol - L;
 Deltav = v1_sol - v2_sol;
 
 f = figure;
@@ -82,11 +82,15 @@ legend('Leader', 'Follower', 'Interpreter', 'latex', 'FontSize', 12);
 grid on;
 
 accel_follow = gradient(v2_sol, t_sol);
+accel_leader = gradient(v_leader, t_leader);
 subplot(2,3,3);
-plot(t_sol, accel_follow, 'LineWidth',2, 'Color','#445378');
+hold on;
+plot(t_leader, accel_leader, 'LineWidth',2, 'Color','#254422');
+plot(t_sol, accel_follow, 'LineWidth',2, 'Color','#34eb77');
 xlabel('Time [s]', 'Interpreter', 'latex', 'FontSize', 14);
 ylabel('Acceleration [$m/s^2$]', 'Interpreter', 'latex', 'FontSize', 14);
 title('Acceleration of the Follower', 'Interpreter', 'latex', 'FontSize', 16);
+legend('Leader', 'Follower', 'Interpreter', 'latex', 'FontSize', 12);
 grid on;
 
 subplot(2,3,4);

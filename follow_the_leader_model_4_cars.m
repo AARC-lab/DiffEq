@@ -41,21 +41,21 @@ for i = 2: length(t_leader)
     x_leader(i) = x_leader(i-1) + avg_speed*dt;
 end
 
-initial_gap = 17;
+initial_gap = 13;
 v0 = 0.0;
 
 % Initial positions of the followers
 x0_followers = zeros(1, N - 1);
-x0_followers(1) = x_leader(1) - L - initial_gap; % Position of the first follower
+x0_followers(1) = x_leader(1) - initial_gap; % Position of the first follower
 
 for k = 2:N-1
-    x0_followers(k) = x0_followers(k-1) - L - initial_gap;
+    x0_followers(k) = x0_followers(k-1) - initial_gap;
 end
 
 % Create Initial State Vector
 y0 = zeros(1, 2*(N-1));
 y0(1:2:end) = x0_followers; % Positions of all follower vehicles
-y0(2:2:end) = v0 * ones(1, N - 1); % Initial speeds of all follower vehicles
+y0(2:2:end) = v0; % Initial speeds of all follower vehicles
 
 % Solving ODE for followers
 t_span = [min(t_leader), max(t_leader)];
@@ -76,9 +76,6 @@ follower_states = cell(1, N-1);
 
 
 for k = 1:N-1
-    % followers_x_sol(:,k) = y_sol(:, 2*k-1); % Odd indices are positions
-    % followers_v_sol(:,k) = y_sol(:, 2*k); % Even indices are velocities
-
     follower_states{k}.x = y_sol(:, 2*k-1);
     follower_states{k}.v = y_sol(:, 2*k);
 
@@ -92,8 +89,6 @@ DeltaV(:,1) = v1_sol - follower_states{1}.v;
 
 
 for k = 2:N-1
-    % gaps(:, k) = followers_x_sol(k-1) -  followers_x_sol(k) - L;
-    % DeltaV(:, k) = followers_v_sol(k-1) -  followers_v_sol(k);
     gaps(:,k) = follower_states{k-1}.x - follower_states{k}.x - L;
     DeltaV(:,k) = follower_states{k-1}.v - follower_states{k}.v;
 end
@@ -129,8 +124,25 @@ title('Velocity Profiles', 'Interpreter', 'latex', 'FontSize', 16);
 legend('show');
 grid on;
 
-% Position trajectories
+
 subplot(2,3,3);
+hold on;
+accel_leader = gradient(v_leader, t_leader);
+plot(t_leader, accel_leader, 'LineWidth', 3, 'Color', colors(1,:), ...
+    'DisplayName', 'Leader');
+for k = 1:(N-1)
+    accel_follower = gradient(follower_states{k}.v, t_sol);
+    plot(t_sol, accel_follower, 'LineWidth', 1.5, 'Color', colors(k+1,:), ...
+        'DisplayName', sprintf('Car %d', k+1));
+end
+xlabel('Time [s]', 'Interpreter', 'latex', 'FontSize', 14);
+ylabel('Acceleration [$m/s^2$]', 'Interpreter', 'latex', 'FontSize', 14);
+title('Acceleration Profiles', 'Interpreter', 'latex', 'FontSize', 16);
+legend('show');
+grid on;
+
+% Position trajectories
+subplot(2,3,4);
 hold on;
 plot(t_sol, x1_sol, 'LineWidth', 3, 'Color', colors(1,:), ...
     'DisplayName', 'Leader');
@@ -143,6 +155,35 @@ ylabel('Position [m]', 'Interpreter', 'latex', 'FontSize', 14);
 title('Position Trajectories', 'Interpreter', 'latex', 'FontSize', 16);
 legend('show', 'Location', 'best');
 grid on;
+
+subplot(2,3,5);
+hold on;
+for k = 1:(N-1)
+    plot(t_sol, DeltaV(:,k), 'LineWidth', 1.5, 'Color', colors(k+1,:), ...
+        'DisplayName', sprintf('Car %d-\\Delta v', k+1));
+end
+xlabel('Time [s]', 'Interpreter', 'latex', 'FontSize', 14);
+ylabel('$\Delta v$ [m/s]', 'Interpreter', 'latex', 'FontSize', 14);
+title('Relative Velocities', 'Interpreter', 'latex', 'FontSize', 16);
+legend('show');
+grid on;
+
+% Gap vs relative velocity (phase plot)
+subplot(2,3,6);
+hold on;
+for k = 1:(N-1)
+    %scatter(gaps(:,k), Deltavs(:,k), 10, t_sol, 'filled');
+    plot(gaps(:,k), DeltaV(:,k), 'LineWidth', 1.5, 'Color', colors(k+1,:));
+    
+end
+
+xlabel('Gap [m]', 'Interpreter', 'latex', 'FontSize', 14);
+ylabel('$\Delta v$ [m/s]', 'Interpreter', 'latex', 'FontSize', 14);
+title('Gap vs. $\Delta v$ (Colored by Time)', 'Interpreter', 'latex', 'FontSize', 16);
+grid on;
+
+sgtitle(sprintf('Follow-the-leader Car-following Model: Continuous Solution using ODEs, %d cars', N), 'Interpreter', 'latex', 'FontSize', 18);
+
 
 function dydt = multi_follower_dynamics(t, y, t_leader, v_leader, x_leader, beta, L, N)
     
@@ -164,7 +205,7 @@ function dydt = multi_follower_dynamics(t, y, t_leader, v_leader, x_leader, beta
             x_front = x_followers(k-1);
             v_front = v_followers(k-1);
         end
-        gap = x_front - x_followers(k);
+        gap = x_front - x_followers(k) - L;
     
         % Derivative
         dxdt = v_followers(k);
