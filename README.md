@@ -17,5 +17,6 @@ $$
 \Delta v_i = v_{i-1} - v_{i}
 $$
 
-Reference: https://www.annualreviews.org/content/journals/10.1146/annurev-control-030123-015145 (Page 3 of the PDF)
-Note: Page 3 has a typo. $\Delta v_i = v_i - v_{i-1}$ should be $\Delta v_i = v_{i-1} - v_{i}$.
+**Reference:** https://www.annualreviews.org/content/journals/10.1146/annurev-control-030123-015145 (Page 3 of the PDF)
+
+**Note:** Page 3 has a typo. $\Delta v_i = v_i - v_{i-1}$ should be $\Delta v_i = v_{i-1} - v_{i}$.
