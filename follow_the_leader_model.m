@@ -6,7 +6,7 @@
 % \xdot_i = v_i
 % \vdot_i = beta\cfrac{\Delta v}{s_i^2}
 % s_i = x_{i-1} - x_i - L
-% \Delta v_i = v_i - v_{i-1}
+% \Delta v_i = v_{i-1} - v_i 
 
 
 beta = 150;

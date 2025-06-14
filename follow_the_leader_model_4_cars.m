@@ -5,13 +5,13 @@
 % \xdot_i = v_i
 % \vdot_i = beta\cfrac{\Delta v}{s_i^2}
 % s_i = x_{i-1} - x_i - L
-% \Delta v_i = v_i - v_{i-1}
+% \Delta v_i = v_{i-1} - v_i 
 
 clc;
 
-beta = 150;
+beta = 250;
 L = 4.0;
-N = 4; % Four cars (including leader)
+N = 24; % Four cars (including leader)
 
 try
     data = readtable("speed.txt");
